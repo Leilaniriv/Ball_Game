@@ -51,7 +51,7 @@ def reset():                # for resetting values for new game (not used)
 
 def rect(l, canvas):        # for creating rectangular walls
     n = l[0]
-    dim = l[1]
+    dim = l[1] 
     y = 200
     canvas.create_rectangle(n, y, n + dim[0], y - dim[1], fill="#476042")
 
@@ -70,6 +70,13 @@ def destroy():
 
 def endfunct(w):            # for end Display
     w.create_text(350, 100, text='Game Over')
+
+def on_space(event):
+    global jump, u, d, c
+    if not jump and c[0] == 200:
+        jump = 1
+        u = 0
+        d = 0
 
 
 def touch(c):               #if ball touch the wall
@@ -157,11 +164,13 @@ def logic():                # for placement of object
     else:
         l5[0] -= 1
 
+    '''
     if keyboard.is_pressed(' '):            # for getting value from keyboard
         jump = 1
         if c[0] == 200:
             u = 0
             d = 0
+    '''
 
     if jump == 1:           # for one complet jump
 
@@ -179,7 +188,7 @@ def logic():                # for placement of object
     if l1[0] == 50 or l2[0] == 50 or l3[0] == 50 or l4[0] == 50 or l5[0] == 50:     # calculate points
         point += 1
 
-    touch(c)
+    touch (c)
 
 
 
@@ -222,9 +231,13 @@ def game():                 # main game function
     w = Canvas(master,
                width=canvas_width,
                height=canvas_height)
+    master.bind('<space>', on_space)
+
     display()
     w.after(100, display)
     w.pack()
+
+    
     mainloop()
 
 
