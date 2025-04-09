@@ -21,6 +21,7 @@ d = 0                       # boolean for downward jump
 jump = 0                    # boolean for jump
 point = 0                   # points
 end = 0                     # for game over
+game_speed = 30
     
 
 def reset():                # for resetting values for new game (not used)
@@ -133,6 +134,7 @@ def logic():                # for placement of object
     global d
     global jump
     global point
+    global game_speed
 
     if l1[0] <= 0:
         n = np.random.randint(50, 100)
@@ -187,8 +189,10 @@ def logic():                # for placement of object
 
     if l1[0] == 50 or l2[0] == 50 or l3[0] == 50 or l4[0] == 50 or l5[0] == 50:     # calculate points
         point += 1
+        if point % 10 == 0 and game_speed > 10: # game speeds up every ten points
+            game_speed -= 2   
 
-    touch (c)
+    touch(c)
 
 
 
@@ -212,14 +216,19 @@ def display():              # for display of game window
     rect(l4, w)
     rect(l5, w)
     circle(c, w)
-    w.create_text(40, 40, text=f'points ==> {point}')
+    w.create_text(50, 40, text=f'points ==> {point}')
     logic()
-    print(point)
+    #print(point)
+
+    
+
 
     if end == 0:
-        w.after(30, display)
+        w.after(game_speed, display)
     elif end == 1:
         endfunct(w)
+
+    #w.create_text(600, 40, text=f'speed: {game_speed}')
 
 
 def game():                 # main game function
@@ -231,10 +240,11 @@ def game():                 # main game function
     w = Canvas(master,
                width=canvas_width,
                height=canvas_height)
+    
     master.bind('<space>', on_space)
 
     display()
-    w.after(100, display)
+    w.after(100 , display)
     w.pack()
 
     
