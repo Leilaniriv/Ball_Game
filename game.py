@@ -21,7 +21,7 @@ d = 0                       # boolean for downward jump
 jump = 0                    # boolean for jump
 point = 0                   # points
 end = 0                     # for game over
-game_speed = 30
+game_speed = 15
     
 
 def reset():                # for resetting values for new game (not used)
@@ -35,13 +35,15 @@ def reset():                # for resetting values for new game (not used)
     global d
     global jump
     global point
+    global game_speed
 
     jump = 0
     u = 0
     d = 0
     point = 0
     end = 0
-
+    game_speed = 15
+    
     l1 = [0, randdim()]
     l2 = [200, randdim()]
     l3 = [400, randdim()]
@@ -71,6 +73,8 @@ def destroy():
 
 def endfunct(w):            # for end Display
     w.create_text(350, 100, text='Game Over')
+    w.create_text(350, 50, text='Press \'r\' to restart')
+
 
 def on_space(event):
     global jump, u, d, c
@@ -78,6 +82,15 @@ def on_space(event):
         jump = 1
         u = 0
         d = 0
+
+def restart(event):
+    global end
+    if end == 1:
+        reset()
+        end = 0
+        #display()
+        w.after(game_speed, display)
+        
 
 
 def touch(c):               #if ball touch the wall
@@ -189,12 +202,10 @@ def logic():                # for placement of object
 
     if l1[0] == 50 or l2[0] == 50 or l3[0] == 50 or l4[0] == 50 or l5[0] == 50:     # calculate points
         point += 1
-        if point % 10 == 0 and game_speed > 10: # game speeds up every ten points
+        if point % 10 == 0 and game_speed > 0: # game speeds up every ten points
             game_speed -= 2   
 
     touch(c)
-
-
 
 
 def display():              # for display of game window
@@ -206,8 +217,10 @@ def display():              # for display of game window
     global l5
     global c
     global point
+    #global game_speed
     canvas_width = 700
     canvas_height = 400
+    
     w.delete("all")
     w.create_line(0, 200, canvas_width, 200, fill="#400000")
     rect(l1, w)
@@ -216,11 +229,11 @@ def display():              # for display of game window
     rect(l4, w)
     rect(l5, w)
     circle(c, w)
+    #game_speed = 30
     w.create_text(50, 40, text=f'points ==> {point}')
     logic()
     #print(point)
 
-    
 
 
     if end == 0:
@@ -228,7 +241,7 @@ def display():              # for display of game window
     elif end == 1:
         endfunct(w)
 
-    #w.create_text(600, 40, text=f'speed: {game_speed}')
+    w.create_text(600, 40, text=f'speed: {game_speed}')
 
 
 def game():                 # main game function
@@ -243,8 +256,10 @@ def game():                 # main game function
     
     master.bind('<space>', on_space)
 
+    master.bind("r", restart)
+
     display()
-    w.after(100 , display)
+    
     w.pack()
 
     
