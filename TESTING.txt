@@ -1,0 +1,61 @@
+TESTING.txt – Manual Testing Procedure
+
+Project: Obstacle Jumper
+
+
+Overview:
+This document outlines the manual testing procedure used to verify the functionality of the Obstacle Jumper game. The testing focused on core gameplay mechanics, 
+UI display, and user input handling. All features were manually tested through direct interaction with the game window using keyboard input.
+
+Test Cases
+
+1. Start Screen Loads
+- Action: Launch the game.
+- Expected Result: "OBSTACLE JUMPER" and "Press SPACE to Start" are displayed. Game does not begin automatically.
+
+2. Game Starts on SPACE
+- Action: Press SPACE.
+- Expected Result: Gameplay begins. Obstacles begin moving. Ball is stationary until input.
+
+3. Jump Mechanics
+- Action: Hold SPACE briefly, then release.
+- Expected Result: Player performs a short jump.
+
+- Action: Hold SPACE for longer, then release.
+- Expected Result: Player jumps higher, consistent with hold duration.
+
+4. Obstacle Collision
+- Action: Do not jump, let the player hit an obstacle.
+- Expected Result: Game over message appears. Restart prompt is visible.
+
+5. Restart Function
+- Action: Press R after a game over.
+- Expected Result: Game resets to initial state. Obstacles respawn, score resets.
+
+6. Coin Collection
+- Action: Jump through a coin above an obstacle.
+- Expected Result: Coin disappears. Coin count increases by 1. Point value increases.
+
+7. Shield Power-Up
+- Action: Collect a blue power-up.
+- Expected Result: Player turns blue. Obstacles do not cause game over while shield is active. Shield timer appears.
+
+8. High Score Tracking
+- Action: Play until earning a higher score than previously recorded.
+- Expected Result: High score display updates appropriately.
+
+9. Pause Feature
+- Action: Press P during gameplay.
+- Expected Result: “PAUSED” is displayed. Player and obstacles freeze. Game state is maintained.
+
+- Action: Press P again.
+- Expected Result: Gameplay resumes smoothly.
+
+10. Background Color Change
+- Action: Play until game speed increases.
+- Expected Result: Background color above the ground line shifts toward a darker red as speed increases.
+
+Notes:
+- All test cases passed during manual testing.
+- No critical bugs were encountered.
+- The game was tested on a standard desktop Python environment with GUI support.

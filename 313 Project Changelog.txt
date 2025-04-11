@@ -1,0 +1,75 @@
+﻿Changelog:
+________________
+Features Added:
+Jump Physics using Gravity:
+
+* Replaced fixed-frame jumping with velocity-based gravity.
+
+* More natural, parabolic jump arc using velocity += gravity.
+
+Variable Jump Height:
+
+   * Jump height is based on how long the spacebar is held down.
+
+Power-Up: Shield:
+
+      * Blue circle grants temporary invincibility.
+
+      * Visual indicator (ball turns blue when shield is active).
+
+Coin System:
+
+         * Coins spawn above obstacles at random heights.
+
+         * Player can collect them by jumping through them.
+
+         * Coin count tracked separately from score.
+
+Power-Up Collection Logic:
+
+            * Spawns randomly after moving offscreen.
+
+            * Detects player pickup and applies effect.
+
+Pause Functionality:
+
+               * Press P to pause or resume the game.
+
+               * Halts physics, movement, logic, and shows "PAUSED" on screen.
+UI and Visual Changes
+                  * Start Screen:
+
+                     * Displays “OBSTACLE JUMPER” and “Press SPACE to Start”.
+
+                     * Game doesn’t start until the player presses space.
+
+                        * Dynamic Background Color:
+
+                           * The top half of the screen changes color based on game speed.
+
+                              * On-Screen UI Enhancements:
+
+                                 * Points
+
+                                 * Coins Collected
+
+                                 * High Score
+
+                                 * Shield Timer
+
+                                 * Speed Display
+
+                                    * Game Over Screen Upgrade:
+
+                                       * Displays “Game Over” and a prompt to press R to restart.
+
+                                       * Tracks and updates highscore on screen.
+
+
+Things to potentially add in future
+                                          * Highscores/past run scores saved in file
+                                          * Animated coins
+                                          * Further tweaking of physics
+                                          * More power ups
+                                          * Dash/speed boost button
+                                          * Difficulty selection
