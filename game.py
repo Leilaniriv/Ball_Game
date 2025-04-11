@@ -22,11 +22,20 @@ end = 0
 game_speed = 15
 jump_height = 0
 space_pressed_time = None
+#variables for powerups
+power_up = [1000, 180]  # x,y
+shield_active = False
+shield_timer = 0
+
 
 def reset():
     global l1, l2, l3, l4, l5, c, u, d, jump, point, game_speed, end
+    global power_up, shield_active, shield_timer
+    power_up = [1000, 180]
+    shield_active = False
+    shield_timer = 0
     jump = 0
-    u = 0
+    u = 0 # potentially depricated variables, remove once finished maybe?
     d = 0
     point = 0
     end = 0
@@ -38,6 +47,19 @@ def reset():
     l5 = [800, randdim()]
     c = [200, (20, 20)]
 
+def draw_power_up(canvas):
+    if 0 < power_up[0] < 700:
+        canvas.create_oval(power_up[0], power_up[1] - 10, power_up[0] + 20, power_up[1] + 10, fill="blue")
+
+def activate_shield():
+    global shield_active, shield_timer
+    shield_active = True
+    shield_timer = 300  # lasts ~5 seconds at 60fps
+
+def deactivate_shield():
+    global shield_active
+    shield_active = False
+
 def rect(l, canvas):
     n = l[0]
     dim = l[1]
@@ -45,10 +67,12 @@ def rect(l, canvas):
     canvas.create_rectangle(n, y, n + dim[0], y - dim[1], fill="#476042")
 
 def circle(c, canvas):
+    global shield_active
     n = 50
     dim = c[1]
     y = c[0]
-    canvas.create_oval(n, y - dim[1], n + dim[0], y, fill="yellow")
+    color = "blue" if shield_active else "yellow"
+    canvas.create_oval(n, y - dim[1], n + dim[0], y, fill=color)
 
 def destroy():
     w.destroy()
@@ -84,6 +108,8 @@ def restart(event):
 
 def touch(c):
     global end
+    if shield_active:
+        return
     for l in [l1, l2, l3, l4, l5]:
         if 25 < l[0] < 75:
             for i in range(l[1][1]):
@@ -113,10 +139,27 @@ def logic():
 
     if any(l[0] == 50 for l in [l1, l2, l3, l4, l5]):
         point += 1
-        if point % 10 == 0 and game_speed > 0:
+        if point % 5 == 0 and game_speed > 0:
             game_speed -= 2
-
     touch(c)
+    power_up[0] -= 1
+    if power_up[0] <= -20:
+        if np.random.rand() < 0.01:  # small chance to respawn
+            power_up[0] = 950
+            power_up[1] = np.random.randint(140, 180)
+
+    # Check for power-up pickup
+    if 40 < power_up[0] < 70 and 180 < c[0] < 220:
+        power_up[0] = -100  # move it off-screen
+        activate_shield()
+
+    # Handle shield timing
+    if shield_active:
+        global shield_timer
+        shield_timer -= 1
+        if shield_timer <= 0:
+            deactivate_shield()
+
 
 def display():
     global w, c, point
@@ -127,6 +170,7 @@ def display():
     for l in [l1, l2, l3, l4, l5]:
         rect(l, w)
     circle(c, w)
+    draw_power_up(w)
     w.create_text(50, 40, text=f'points ==> {point}')
     logic()
     if end == 0:
