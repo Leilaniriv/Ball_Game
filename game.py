@@ -16,6 +16,12 @@ l5 = [800, randdim()]
 c = [200, (20, 20)]
 u = 0
 d = 0
+# Variables for gravity
+jump_strength = -8
+gravity = 0.3
+velocity = 0
+on_ground = True
+
 jump = 0
 point = 0
 end = 0
@@ -31,6 +37,9 @@ shield_timer = 0
 def reset():
     global l1, l2, l3, l4, l5, c, u, d, jump, point, game_speed, end
     global power_up, shield_active, shield_timer
+    global velocity, on_ground
+    velocity = 0
+    on_ground = True
     power_up = [1000, 180]
     shield_active = False
     shield_timer = 0
@@ -89,15 +98,16 @@ def on_space(event):
 
 def on_space_release(event):
     global jump, u, d, c, space_pressed_time, jump_height
+    global velocity, on_ground
     if space_pressed_time is not None:
         held_time = time.time() - space_pressed_time
         space_pressed_time = None
         held_time = max(0.1, min(held_time, 1.0))
         jump_height = int(held_time * 100)
-        if not jump and c[0] == 200:
-            jump = 1
-            u = 0
-            d = 0
+        if on_ground:
+            held_time = max(0.1, min(held_time, 1.0))
+            velocity = jump_strength * held_time * 1.5  # boost based on hold time
+            on_ground = False
 
 def restart(event):
     global end
@@ -127,15 +137,15 @@ def logic():
         else:
             l[0] -= 1
 
-    if jump == 1:
-        if u < jump_height:
-            c[0] -= 1
-            u += 1
-        elif d < jump_height:
-            c[0] += 1
-            d += 1
-        else:
-            jump = 0
+    global velocity, gravity, on_ground
+    velocity += gravity
+    c[0] += velocity
+
+    # stop at ground
+    if c[0] >= 200:
+        c[0] = 200
+        velocity = 0
+        on_ground = True
 
     if any(l[0] == 50 for l in [l1, l2, l3, l4, l5]):
         point += 1
