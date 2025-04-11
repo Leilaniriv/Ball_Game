@@ -6,7 +6,7 @@ import time
 def randdim():
     x = int(np.random.randint(5, 10, 1))
     y = int(np.random.randint(25, 50, 1))
-    coin_offset = int(np.random.randint(10, 60))  # 10 to 60 pixels above
+    coin_offset = int(np.random.randint(30, 70))  # 30 to 70 pixels above
     return x, y, False, coin_offset
 
 l1 = [0, randdim()]
@@ -28,7 +28,7 @@ point = 0
 end = 0
 coins_collected = 0
 high_score = 0
-game_speed = 15
+game_speed = 13
 jump_height = 0
 space_pressed_time = None
 paused = False
@@ -54,7 +54,7 @@ def reset():
     d = 0
     point = 0
     end = 0
-    game_speed = 15
+    game_speed = 13
     l1 = [0, randdim()]
     l2 = [200, randdim()]
     l3 = [400, randdim()]
@@ -194,7 +194,7 @@ def logic():
             deactivate_shield()
 
 def get_background_color():
-    max_speed = 15  # Starting game speed
+    max_speed = 13 # Starting game speed
     min_speed = 1
     norm = (game_speed - min_speed) / (max_speed - min_speed)
     intensity = int(255 * norm)
