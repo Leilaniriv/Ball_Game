@@ -172,6 +172,8 @@ def display():
     circle(c, w)
     draw_power_up(w)
     w.create_text(50, 40, text=f'points ==> {point}')
+    if shield_active:
+        w.create_text(50, 70, text=f'Shield: {shield_timer // 60}', fill='blue')
     logic()
     if end == 0:
         w.after(game_speed, display)
