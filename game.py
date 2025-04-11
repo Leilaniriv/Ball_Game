@@ -6,7 +6,8 @@ import time
 def randdim():
     x = int(np.random.randint(5, 10, 1))
     y = int(np.random.randint(25, 50, 1))
-    return x, y
+    coin_offset = int(np.random.randint(10, 60))  # 10 to 60 pixels above
+    return x, y, False, coin_offset
 
 l1 = [0, randdim()]
 l2 = [200, randdim()]
@@ -156,6 +157,15 @@ def logic():
         if point % 5 == 0 and game_speed > 0:
             game_speed -= 2
     touch(c)
+    for l in [l1, l2, l3, l4, l5]:
+        if not l[1][2]:  # coin not collected
+            cx = l[0] + l[1][0] // 2
+            cy = 200 - l[1][1] - l[1][3]
+            dx = abs(cx - 60)
+            dy = abs(cy - c[0])
+            if dx < 10 and dy < 10:
+                l[1] = (l[1][0], l[1][1], True)  # mark coin as collected
+                point += 1
     power_up[0] -= 1
     if power_up[0] <= -20:
         if np.random.rand() < 0.01:  # small chance to respawn
@@ -194,6 +204,13 @@ def display():
     w.create_line(0, 200, canvas_width, 200, fill="#400000")
     for l in [l1, l2, l3, l4, l5]:
         rect(l, w)
+
+        # Draw coin if not collected
+        if not l[1][2]:  # if coin not collected
+            cx = l[0] + l[1][0] // 2
+            cy = 200 - l[1][1] - l[1][3]
+            w.create_oval(cx - 5, cy - 5, cx + 5, cy + 5, fill="gold")
+
     circle(c, w)
     draw_power_up(w)
     w.create_text(50, 40, text=f'points ==> {point}')
