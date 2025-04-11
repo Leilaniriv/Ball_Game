@@ -22,7 +22,7 @@ jump_strength = -8
 gravity = 0.3
 velocity = 0
 on_ground = True
-
+game_started = False
 jump = 0
 point = 0
 end = 0
@@ -100,9 +100,13 @@ def endfunct(w):
     w.create_text(350, 50, text='Press R to restart')
 
 def on_space(event):
-    global space_pressed_time
-    if space_pressed_time is None:
-        space_pressed_time = time.time()
+    global space_pressed_time, game_started
+    if not game_started:
+        game_started = True
+        display()
+    else:
+        if space_pressed_time is None:
+            space_pressed_time = time.time()
 
 def on_space_release(event):
     global jump, u, d, c, space_pressed_time, jump_height
@@ -197,6 +201,10 @@ def get_background_color():
     hex_color = f'#{intensity:02x}2020'
     return hex_color
 
+def show_start_screen():
+    w.delete("all")
+    w.create_text(350, 150, text="OBSTACLE JUMPER", font=("Helvetica", 24), fill="black")
+    w.create_text(350, 200, text="Press SPACE to Start", font=("Helvetica", 14), fill="black")
 
 def display():
     global w, c, point
@@ -236,8 +244,9 @@ def game():
     master.bind('<space>', on_space)
     master.bind('<KeyRelease-space>', on_space_release)
     master.bind("r", restart)
-    display()
+    #display() removed for start menu to work
     w.pack()
+    show_start_screen()
     mainloop()
 
 game()
