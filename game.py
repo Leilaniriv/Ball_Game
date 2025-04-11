@@ -31,6 +31,7 @@ high_score = 0
 game_speed = 15
 jump_height = 0
 space_pressed_time = None
+paused = False
 #variables for powerups
 power_up = [1000, 180]  # x,y
 shield_active = False
@@ -201,6 +202,10 @@ def get_background_color():
     hex_color = f'#{intensity:02x}2020'
     return hex_color
 
+def toggle_pause(event):
+    global paused
+    paused = not paused
+
 def show_start_screen():
     w.delete("all")
     w.create_text(350, 150, text="OBSTACLE JUMPER", font=("Helvetica", 24), fill="black")
@@ -230,17 +235,24 @@ def display():
     w.create_text(622, 20, text=f'High score ==> {high_score}')
     if shield_active:
         w.create_text(50, 70, text=f'Shield: {shield_timer // 60}', fill='blue')
-    logic()
+    if not paused:
+        logic()
     if end == 0:
-        w.after(game_speed, display)
+        if not paused:
+            w.after(game_speed, display)
+        else:
+            w.create_text(350, 100, text="PAUSED", font=("Helvetica", 20), fill="black")
+            w.after(100, display)  # keep refreshing slowly while paused
     elif end == 1:
         endfunct(w)
+
     w.create_text(600, 40, text=f'Speed: {game_speed}')
 
 def game():
     global w
     master = Tk()
     w = Canvas(master, width=700, height=400)
+    master.bind("p", toggle_pause)
     master.bind('<space>', on_space)
     master.bind('<KeyRelease-space>', on_space_release)
     master.bind("r", restart)
