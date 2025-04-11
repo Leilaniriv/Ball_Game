@@ -26,6 +26,7 @@ on_ground = True
 jump = 0
 point = 0
 end = 0
+coins_collected = 0
 high_score = 0
 game_speed = 15
 jump_height = 0
@@ -38,9 +39,11 @@ shield_timer = 0
 
 def reset():
     global l1, l2, l3, l4, l5, c, u, d, jump, point, game_speed, end
+    global coins_collected
     global power_up, shield_active, shield_timer
     global velocity, on_ground
     velocity = 0
+    coins_collected = 0
     on_ground = True
     power_up = [1000, 180]
     shield_active = False
@@ -134,7 +137,7 @@ def touch(c):
                     break
 
 def logic():
-    global l1, l2, l3, l4, l5, c, u, d, jump, point, game_speed
+    global l1, l2, l3, l4, l5, c, u, d, jump, point, game_speed, coins_collected
     for l in [l1, l2, l3, l4, l5]:
         if l[0] <= 0:
             n = np.random.randint(30, 100)
@@ -166,6 +169,7 @@ def logic():
             if dx < 10 and dy < 10:
                 l[1] = (l[1][0], l[1][1], True)  # mark coin as collected
                 point += 1
+                coins_collected += 1
     power_up[0] -= 1
     if power_up[0] <= -20:
         if np.random.rand() < 0.01:  # small chance to respawn
@@ -213,8 +217,9 @@ def display():
 
     circle(c, w)
     draw_power_up(w)
-    w.create_text(50, 40, text=f'points ==> {point}')
-    w.create_text(50, 55, text=f'high score ==> {high_score}')
+    w.create_text(40, 15, text=f'Points ==> {point}')
+    w.create_text(40, 30, text=f'Coins ==> {coins_collected}')
+    w.create_text(622, 20, text=f'High score ==> {high_score}')
     if shield_active:
         w.create_text(50, 70, text=f'Shield: {shield_timer // 60}', fill='blue')
     logic()
@@ -222,7 +227,7 @@ def display():
         w.after(game_speed, display)
     elif end == 1:
         endfunct(w)
-    w.create_text(600, 40, text=f'speed: {game_speed}')
+    w.create_text(600, 40, text=f'Speed: {game_speed}')
 
 def game():
     global w
