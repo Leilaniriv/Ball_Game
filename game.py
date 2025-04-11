@@ -28,7 +28,7 @@ point = 0
 end = 0
 coins_collected = 0
 high_score = 0
-game_speed = 13
+game_speed = 12
 jump_height = 0
 space_pressed_time = None
 paused = False
@@ -54,7 +54,7 @@ def reset():
     d = 0
     point = 0
     end = 0
-    game_speed = 13
+    game_speed = 12
     l1 = [0, randdim()]
     l2 = [200, randdim()]
     l3 = [400, randdim()]
@@ -127,7 +127,7 @@ def restart(event):
     if end == 1:
         reset()
         end = 0
-        w.after(game_speed, display)
+        w.after(int(game_speed), display)
 
 def touch(c):
     global end
@@ -162,7 +162,7 @@ def logic():
 
     if any(l[0] == 50 for l in [l1, l2, l3, l4, l5]):
         point += 1
-        if point % 5 == 0 and game_speed > 0:
+        if point % 5 == 0 and game_speed > 2:
             game_speed -= 2
     touch(c)
     for l in [l1, l2, l3, l4, l5]:
@@ -194,13 +194,19 @@ def logic():
             deactivate_shield()
 
 def get_background_color():
-    max_speed = 13 # Starting game speed
-    min_speed = 1
+    max_speed = 12  # starting speed
+    min_speed = 2  # fastest
+
+    # Normalize speed between 0 and 1 (0 = max speed, 1 = start)
     norm = (game_speed - min_speed) / (max_speed - min_speed)
-    intensity = int(255 * norm)
-    intensity = max(0, min(intensity, 255))
-    hex_color = f'#{intensity:02x}2020'
-    return hex_color
+    norm = max(0, min(norm, 1))  # clamp just in case
+
+    # Math to go from blue to red as speed icnreases
+    r = int(255 * (1 - norm) + 173 * norm)
+    g = int(32 * (1 - norm) + 216 * norm)
+    b = int(32 * (1 - norm) + 230 * norm)
+
+    return f'#{r:02x}{g:02x}{b:02x}'
 
 def toggle_pause(event):
     global paused
