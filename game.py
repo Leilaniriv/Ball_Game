@@ -25,6 +25,7 @@ on_ground = True
 jump = 0
 point = 0
 end = 0
+high_score = 0
 game_speed = 15
 jump_height = 0
 space_pressed_time = None
@@ -88,6 +89,9 @@ def destroy():
     display()
 
 def endfunct(w):
+    global high_score, point
+    if point > high_score:
+        high_score = point
     w.create_text(350, 100, text='Game Over')
     w.create_text(350, 50, text='Press R to restart')
 
@@ -193,6 +197,7 @@ def display():
     circle(c, w)
     draw_power_up(w)
     w.create_text(50, 40, text=f'points ==> {point}')
+    w.create_text(50, 55, text=f'high score ==> {high_score}')
     if shield_active:
         w.create_text(50, 70, text=f'Shield: {shield_timer // 60}', fill='blue')
     logic()
