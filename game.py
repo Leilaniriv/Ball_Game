@@ -170,12 +170,23 @@ def logic():
         if shield_timer <= 0:
             deactivate_shield()
 
+def get_background_color():
+    max_speed = 15  # Starting game speed
+    min_speed = 1
+    norm = (game_speed - min_speed) / (max_speed - min_speed)
+    intensity = int(255 * norm)
+    intensity = max(0, min(intensity, 255))
+    hex_color = f'#{intensity:02x}2020'
+    return hex_color
+
 
 def display():
     global w, c, point
     canvas_width = 700
     canvas_height = 400
+    bg_color = get_background_color()
     w.delete("all")
+    w.create_rectangle(0, 0, canvas_width, 200, fill=get_background_color(), outline="")
     w.create_line(0, 200, canvas_width, 200, fill="#400000")
     for l in [l1, l2, l3, l4, l5]:
         rect(l, w)
