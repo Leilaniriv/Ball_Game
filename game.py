@@ -27,7 +27,7 @@ u = 0
 d = 0
 # Variables for gravity
 jump_strength = -8
-gravity = 0.3
+gravity = 0.5
 velocity = 0
 on_ground = True
 game_started = False
@@ -71,9 +71,9 @@ def reset():
     l3 = [400, randdim()]
     l4 = [600, randdim()]
     l5 = [800, randdim()]
-
     # reset player position
     c = [200, (20, 20)]
+
 # Draws power up circle on screen
 def draw_power_up(canvas):
     if 0 < power_up[0] < 700:
@@ -97,7 +97,6 @@ def rect(l, canvas):
     y = 200  # baseline for obstacle height
     canvas.create_rectangle(n, y, n + dim[0], y - dim[1], fill="#476042")
 
-
 # draws the player character as a circle, blue if shield is active
 def circle(c, canvas):
     global shield_active
@@ -105,7 +104,7 @@ def circle(c, canvas):
     dim = c[1]                    # width and height
     y = c[0]                      # y position
     color = "blue" if shield_active else "yellow"  # switch color based on shield
-    canvas.create_oval(n, y - dim[1], n + dim[0], y, fill=color)
+    canvas.create_oval(n, c[0] - dim[1], n + dim[0], c[0], fill=color)
 
 # Destroys window for restart
 def destroy():
@@ -129,29 +128,32 @@ def on_space(event):
     else:
         if space_pressed_time is None:
             space_pressed_time = time.time()
+
 # handles logic when the spacebar is released to trigger a jump
 def on_space_release(event):
-    global jump, u, d, c, space_pressed_time, jump_height
+    global space_pressed_time, jump_height
     global velocity, on_ground
-    if space_pressed_time is not None:
+    if on_ground and space_pressed_time is not None:
         # calculate how long spacebar was held
         held_time = time.time() - space_pressed_time
         space_pressed_time = None
         held_time = max(0.1, min(held_time, 1.0))
-        jump_height = int(held_time * 100)
-        if on_ground:
+        jump_height = int(-held_time * 100)
+
             # apply velocity
-            held_time = max(0.1, min(held_time, 1.0))
-            velocity = jump_strength * held_time * 1.5  # boost based on hold time
-            on_ground = False
-# uses reset() to restart teh game
+        held_time = max(0.1, min(held_time, 1.0))
+        velocity = jump_height  #* held_time * 1.5  # boost based on hold time
+        on_ground = False
+
+# uses reset() to restart the game
 def restart(event):
     global end
     if end == 1:
         reset()
         end = 0
         w.after(int(game_speed), display)
-# cehcks for object collision, unless shield present
+
+# checks for object collision, unless shield present
 def touch(c):
     global end
     # stop if shield is on
@@ -165,6 +167,7 @@ def touch(c):
                 if check <= np.square(10):
                     end = 1 # game over
                     break
+
 # Primary driver of the game, handles calling all functions that control gameplay
 def logic():
     global l1, l2, l3, l4, l5, c, u, d, jump, point, game_speed, coins_collected
@@ -189,6 +192,7 @@ def logic():
         point += 1
         if point % 5 == 0 and game_speed > 2:
             game_speed -= 2
+    
     touch(c)
     for l in [l1, l2, l3, l4, l5]:
         if not l[1][2]:  # coin not collected
@@ -241,6 +245,7 @@ def show_start_screen():
     w.delete("all")
     w.create_text(350, 150, text="OBSTACLE JUMPER", font=("Helvetica", 24), fill="black")
     w.create_text(350, 200, text="Press SPACE to Start", font=("Helvetica", 14), fill="black")
+
 # frame by frame handler of what is displayed, primary canvas driver
 def display():
     global w, c, point
@@ -278,6 +283,7 @@ def display():
         endfunct(w) # show game over screen
 
     w.create_text(600, 40, text=f'Speed: {game_speed}')
+    
 # The main game function that sets up window and keybinds
 def game():
     global w
