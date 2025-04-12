@@ -1,0 +1,3 @@
+Leilani: Chose project, Initiated game improvements and features
+
+Miles: Implemented various game improvements and features, wrote documentation of current project standing, and mission statement
