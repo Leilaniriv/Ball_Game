@@ -58,4 +58,4 @@ Test Cases
 Notes:
 - All test cases passed during manual testing.
 - No critical bugs were encountered.
-- The game was tested on a standard desktop Python environment with GUI support.
+- The game was tested on a standard desktop Python environment with all needed imports pre installed (make sure to install the keyboard package)
