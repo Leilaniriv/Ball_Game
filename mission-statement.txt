@@ -1,0 +1,1 @@
+Mission statement: The goal is to add enough features to this game that it feels like the additions are more impactful then the base code provided. The end product should be something simple, but still engaging enough that testing it isn't a chore but rather fun. 
