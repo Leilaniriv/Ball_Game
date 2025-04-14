@@ -26,9 +26,12 @@ c = [200, (20, 20)]
 u = 0
 d = 0
 # Variables for gravity
-jump_strength = -8
-gravity = 0.5
+#jump_strength = -8
 velocity = 0
+max_fall_speed = 8
+start_velocity = 12
+gravity_up = 0.3
+gravity_down = 0.5
 on_ground = True
 game_started = False
 jump = 0
@@ -37,13 +40,13 @@ end = 0
 coins_collected = 0
 high_score = 0
 game_speed = 12
-jump_height = 0
 space_pressed_time = None
 paused = False
 #variables for powerups
 power_up = [1000, 180]  # x,y
 shield_active = False
 shield_timer = 0
+
 
 
 def reset():
@@ -125,24 +128,22 @@ def on_space(event):
     if not game_started:
         game_started = True
         display()
-    else:
-        if space_pressed_time is None:
-            space_pressed_time = time.time()
+    if on_ground:
+        space_pressed_time = time.time()
 
 # handles logic when the spacebar is released to trigger a jump
 def on_space_release(event):
-    global space_pressed_time, jump_height
-    global velocity, on_ground
+    global space_pressed_time
+    global velocity, on_ground, start_velocity
     if on_ground and space_pressed_time is not None:
         # calculate how long spacebar was held
         held_time = time.time() - space_pressed_time
         space_pressed_time = None
-        held_time = max(0.1, min(held_time, 1.0))
-        jump_height = int(-held_time * 100)
 
             # apply velocity
         held_time = max(0.1, min(held_time, 1.0))
-        velocity = jump_height  #* held_time * 1.5  # boost based on hold time
+        scaled_time = (held_time / 1.0) ** 0.5
+        velocity = -start_velocity * (0.6 + scaled_time * 0.6) 
         on_ground = False
 
 # uses reset() to restart the game
@@ -179,9 +180,19 @@ def logic():
             l[0] -= 1
 
     global velocity, gravity, on_ground
-    velocity += gravity
+    #velocity += gravity
     c[0] += velocity
 
+    if velocity < 0:
+        velocity += gravity_up
+    else:
+        velocity += gravity_down
+
+
+    if velocity > max_fall_speed:
+        velocity = max_fall_speed
+
+    
     # stop at ground
     if c[0] >= 200:
         c[0] = 200
@@ -291,7 +302,7 @@ def game():
     w = Canvas(master, width=700, height=400)
     #keybinds
     master.bind("p", toggle_pause)
-    master.bind('<space>', on_space)
+    master.bind('<KeyPress-space>', on_space)
     master.bind('<KeyRelease-space>', on_space_release)
     master.bind("r", restart)
     #display() removed for start menu to work
