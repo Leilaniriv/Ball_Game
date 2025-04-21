@@ -69,7 +69,7 @@ UI and Visual Changes
 Things to potentially add in future
                                           * Highscores/past run scores saved in file
                                           * Animated coins
-                                          * Further tweaking of physics
                                           * More power ups
                                           * Dash/speed boost button
                                           * Difficulty selection
+                                          

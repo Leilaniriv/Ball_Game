@@ -1,4 +1,5 @@
 import numpy as np
+import tkinter as tk
 from tkinter import *
 import keyboard
 import time
@@ -26,7 +27,6 @@ c = [200, (20, 20)]
 u = 0
 d = 0
 # Variables for gravity
-#jump_strength = -8
 velocity = 0
 max_fall_speed = 8
 start_velocity = 12
@@ -46,6 +46,9 @@ paused = False
 power_up = [1000, 180]  # x,y
 shield_active = False
 shield_timer = 0
+easy_button = None
+standard_button = None
+difficult_button = None
 
 
 
@@ -53,7 +56,7 @@ def reset():
     global l1, l2, l3, l4, l5, c, u, d, jump, point, game_speed, end
     global coins_collected
     global power_up, shield_active, shield_timer
-    global velocity, on_ground
+    global velocity, on_ground, start_velocity
 
     velocity = 0                  # reset fall speed
     coins_collected = 0          # reset coins
@@ -131,6 +134,7 @@ def on_space(event):
     if on_ground:
         space_pressed_time = time.time()
 
+
 # handles logic when the spacebar is released to trigger a jump
 def on_space_release(event):
     global space_pressed_time
@@ -143,7 +147,7 @@ def on_space_release(event):
             # apply velocity
         held_time = max(0.1, min(held_time, 1.0))
         scaled_time = (held_time / 1.0) ** 0.5
-        velocity = -start_velocity * (0.6 + scaled_time * 0.6) 
+        velocity = -start_velocity * (0.5 + scaled_time * 0.6) 
         on_ground = False
 
 # uses reset() to restart the game
@@ -252,10 +256,53 @@ def toggle_pause(event):
     global paused
     paused = not paused
 
+def set_difficulty(level):
+    global start_velocity, gravity_up, gravity_down
+    if level == "easy":
+        start_velocity = 16
+        gravity_up = 0.2
+        gravity_down = 0.4
+    elif level == "standard":
+        start_velocity = 14
+        gravity_up = 0.3
+        gravity_down = 0.5
+    elif level == "difficult":
+        start_velocity = 13
+        gravity_up = 0.35
+        gravity_down = 0.6
+
+def start_game_difficulty(level):
+    set_difficulty(level)
+    start_game()
+
+def start_game():
+    global game_started, easy_button, standard_button, difficult_button
+    game_started = True
+
+    for btn in start_screen_buttons:
+        btn.destroy()
+
+    display()
+
+start_screen_buttons = []
+
 def show_start_screen():
+    global w, start_screen_buttons
     w.delete("all")
     w.create_text(350, 150, text="OBSTACLE JUMPER", font=("Helvetica", 24), fill="black")
     w.create_text(350, 200, text="Press SPACE to Start", font=("Helvetica", 14), fill="black")
+    w.create_text(350, 220, text="Select Game Difficulty", font=("Helvetica", 14), fill="black")
+    
+    easy_button = tk.Button(w, text="Easy", command =lambda: start_game_difficulty("easy"))
+    standard_button = tk.Button(w, text="Standard", command =lambda: start_game_difficulty("standard"))
+    difficult_button = tk.Button(w, text="Difficult", command =lambda: start_game_difficulty("difficult"))
+
+    w.create_window(270, 270, window=easy_button)
+    w.create_window(350, 270, window=standard_button)
+    w.create_window(440, 270, window=difficult_button)
+    
+    start_screen_buttons = [easy_button, standard_button, difficult_button]
+
 
 # frame by frame handler of what is displayed, primary canvas driver
 def display():
