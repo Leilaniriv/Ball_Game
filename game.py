@@ -147,7 +147,7 @@ def on_space_release(event):
             # apply velocity
         held_time = max(0.1, min(held_time, 1.0))
         scaled_time = (held_time / 1.0) ** 0.5
-        velocity = -start_velocity * (0.5 + scaled_time * 0.6) 
+        velocity = -start_velocity * (0.3 + scaled_time * 0.4) 
         on_ground = False
 
 # uses reset() to restart the game
@@ -219,6 +219,7 @@ def logic():
                 l[1] = (l[1][0], l[1][1], True)  # mark coin as collected
                 point += 1
                 coins_collected += 1
+
     power_up[0] -= 1
     if power_up[0] <= -20:
         if np.random.rand() < 0.01:  # small chance to respawn
@@ -290,8 +291,8 @@ def show_start_screen():
     global w, start_screen_buttons
     w.delete("all")
     w.create_text(350, 150, text="OBSTACLE JUMPER", font=("Helvetica", 24), fill="black")
-    w.create_text(350, 200, text="Press SPACE to Start", font=("Helvetica", 14), fill="black")
-    w.create_text(350, 220, text="Select Game Difficulty", font=("Helvetica", 14), fill="black")
+    #w.create_text(350, 200, text="Press SPACE to Start", font=("Helvetica", 14), fill="black")
+    w.create_text(350, 220, text="Select Game Difficulty to Begin", font=("Helvetica", 14), fill="black")
     
     easy_button = tk.Button(w, text="Easy", command =lambda: start_game_difficulty("easy"))
     standard_button = tk.Button(w, text="Standard", command =lambda: start_game_difficulty("standard"))
@@ -340,7 +341,7 @@ def display():
     elif end == 1:
         endfunct(w) # show game over screen
 
-    w.create_text(600, 40, text=f'Speed: {game_speed}')
+    #w.create_text(600, 40, text=f'Speed: {game_speed}')
     
 # The main game function that sets up window and keybinds
 def game():
